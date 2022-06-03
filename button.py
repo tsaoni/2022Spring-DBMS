@@ -13,7 +13,7 @@ def op_interface(root, op, q_elements):
 	# otitle = Label(text="Please select the conditions:", font=("Arial", 10))
 
 	if op == "SELECT-FROM-WHERE":
-		SELECT_FROM_WHERE()
+		SELECT_FROM_WHERE(root, 0)
 	elif op == "DELETE":
 		DELETE(root, 0)
 	elif op == "INSERT":
@@ -27,9 +27,9 @@ def op_interface(root, op, q_elements):
 	elif op == "EXISTS":
 		EXISTS(root, 0)
 	elif op == "NOT EXISTS":
-		NOT_EXISTS()
+		NOT_EXISTS(root, 0)
 	elif op == "COUNT":
-		COUNT()
+		COUNT(root, 0)
 	elif op == "SUM":
 		SUM(root, 0)
 	elif op == "MAX":
@@ -39,7 +39,7 @@ def op_interface(root, op, q_elements):
 	elif op == "AVG":
 		AVG(root, 0)
 	else: # op == "HAVING"
-		HAVING()
+		HAVING(root, 0)
 
 	
 	back_button = Button(root, text="restart", command=lambda: restart_program(root))
@@ -83,8 +83,54 @@ def button_page(root):
 	op_value.set("SELECT-FROM-WHERE") # default value
 
 # SQL operation
-def SELECT_FROM_WHERE():
-	pass
+def SELECT_FROM_WHERE(root, page, ele = None, table = None):
+	# choose the table to do select from where
+	if page == 0:
+		title = Label(text="Please choose a table to do select from where:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: SELECT_FROM_WHERE(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# delete conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# select from where elements in new page
+		if table == "COMPANY":
+			company(root, "SELECT_FROM_WHERE", 0)
+			f = lambda: company(root, "SELECT_FROM_WHERE", 1)
+		elif table == "DEVELOPER":
+			developer("SELECT_FROM_WHERE", 0)
+			f = lambda: developer("SELECT_FROM_WHERE", 1)
+		elif table == "APP":
+			APP(root, "SELECT_FROM_WHERE", 0)
+			f = lambda: APP(root, "SELECT_FROM_WHERE", 1)
+		elif table == "PLATFORM":
+			platform("SELECT_FROM_WHERE", 0)
+			f = lambda: platform("SELECT_FROM_WHERE", 1)
+		elif table == "CLIENT":
+			client("SELECT_FROM_WHERE", 0)
+			f = lambda: client("SELECT_FROM_WHERE", 1)
+		elif table == "TRADE":
+			trade("SELECT_FROM_WHERE", 0)
+			f = lambda: trade("SELECT_FROM_WHERE", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("SELECT_FROM_WHERE", 0)
+			f = lambda: report_bug("SELECT_FROM_WHERE", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
 
 def DELETE(root, page, ele = None, table = None):
 	# choose the table to delete
@@ -311,7 +357,7 @@ def NOT_IN(root, page, ele = None, table = None):
 		ok_button.grid(row=10, column=0)
 
 def EXISTS(root, page, ele = None, table = None):
-	# choose the table to delete
+	# choose the table to see if exist
 	if page == 0:
 		title = Label(text="Please choose a relationship to do 'exists':", font=("Arial", 10))
 		value = StringVar(root)
@@ -325,13 +371,13 @@ def EXISTS(root, page, ele = None, table = None):
 		menu.grid(row=1, column=0)
 		ok_button.grid(row=2, column=0)
 
-	# delete conditions
+	# exist conditions
 	elif page == 1:
 		# delete elements from last page
 		for e in ele:
 			e.destroy()
 		f = None
-		# delete elements in new page
+		# exist elements in new page
 		if table == "work for":
 			Work_for()
 			f = lambda: Work_for()
@@ -348,11 +394,92 @@ def EXISTS(root, page, ele = None, table = None):
 		ok_button = Button(root, text="ok", command= f)
 		ok_button.grid(row=10, column=0)
 
-def NOT_EXISTS():
-	pass
+def NOT_EXISTS(root, page, ele = None, table = None):
+	# choose the table to see if not exist
+	if page == 0:
+		title = Label(text="Please choose a relationship to do 'not exists':", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "work for", 
+					   "release", "trade", "report bug")
+		value.set("work for") # default value
+		ok_button = Button(root, text="next", command=lambda: NOT_EXISTS(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
 
-def COUNT():
-	pass
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# not exist conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# not exist elements in new page
+		if table == "work for":
+			Work_for()
+			f = lambda: Work_for()
+		elif table == "release":
+			Release(root, "NOT_EXISTS", 0)
+			f = lambda: Release(root, "NOT_EXISTS", 1)
+		elif table == "trade":
+			Trade()
+			f = lambda: Trade()
+		else: # table == "report bug":
+			Report_bug()
+			f = lambda: Report_bug()
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
+def COUNT(root, page, ele = None, table = None):
+	# choose the table to count
+	if page == 0:
+		title = Label(text="Please choose a table to do count:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: COUNT(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# count conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# count elements in new page
+		if table == "COMPANY":
+			company(root, "COUNT", 0)
+			f = lambda: company(root, "COUNT", 1)
+		elif table == "DEVELOPER":
+			developer("COUNT", 0)
+			f = lambda: developer("COUNT", 1)
+		elif table == "APP":
+			APP(root, "COUNT", 0)
+			f = lambda: APP(root, "COUNT", 1)
+		elif table == "PLATFORM":
+			platform("COUNT", 0)
+			f = lambda: platform("COUNT", 1)
+		elif table == "CLIENT":
+			client("COUNT", 0)
+			f = lambda: client("COUNT", 1)
+		elif table == "TRADE":
+			trade("COUNT", 0)
+			f = lambda: trade("COUNT", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("COUNT", 0)
+			f = lambda: report_bug("COUNT", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
 
 def SUM(root, page, ele = None, table = None):
 	# choose the table to do sum
@@ -546,8 +673,53 @@ def AVG(root, page, ele = None, table = None):
 		ok_button = Button(root, text="ok", command= f)
 		ok_button.grid(row=10, column=0)
 
-def HAVING():
-	pass
+def HAVING(root, page, ele = None, table = None):
+	# choose the table to do having
+	if page == 0:
+		title = Label(text="Please choose a table to do having:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: HAVING(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# having conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# having elements in new page
+		if table == "COMPANY":
+			company(root, "HAVING", 0)
+			f = lambda: company(root, "HAVING", 1)
+		elif table == "DEVELOPER":
+			developer("HAVING", 0)
+			f = lambda: developer("HAVING", 1)
+		elif table == "APP":
+			APP(root, "HAVING", 0)
+			f = lambda: APP(root, "HAVING", 1)
+		elif table == "PLATFORM":
+			platform("HAVING", 0)
+			f = lambda: platform("HAVING", 1)
+		elif table == "CLIENT":
+			client("HAVING", 0)
+			f = lambda: client("HAVING", 1)
+		elif table == "TRADE":
+			trade("HAVING", 0)
+			f = lambda: trade("HAVING", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("HAVING", 0)
+			f = lambda: report_bug("HAVING", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
 
 # table operation
 company_element = []
@@ -645,6 +817,28 @@ def developer(op):
 APP_element = []
 def APP(root, op, page):
 	global APP_element
+	if op == "SELECT_FROM_WHERE":
+		if page == 0:
+			# GUI
+			APP_element = []
+			id_label = Label(text="Type the APP ID to search for cost", font=("Arial", 10))
+			id_entry = Entry(root, width=30)
+			APP_element.append(id_entry)
+
+			id_label.grid(row=0, column=0)
+			id_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			print(c.execute("SELECT COST FROM APP WHERE APP_ID = ?",
+					 [APP_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+
 	if op == "INSERT":
 		if page == 0:
 			# GUI
@@ -743,6 +937,28 @@ def APP(root, op, page):
 			APP_element[1].delete(0, END)
 			APP_element[2].delete(0, END)
 
+	if op == "COUNT":
+		if page == 0:
+			# GUI
+			APP_element = []
+			id_label = Label(text="Type the company ID to do count", font=("Arial", 10))
+			id_entry = Entry(root, width=30)
+			APP_element.append(id_entry)
+
+			id_label.grid(row=0, column=0)
+			id_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			print(c.execute("SELECT COUNT(APP_ID) FROM APP WHERE RELEASE_ID = ?",
+					 [APP_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+
 	if op == "SUM":
 		if page == 0:
 			# GUI
@@ -827,6 +1043,28 @@ def APP(root, op, page):
 			conn.close()
 			APP_element[0].delete(0, END)
 
+	if op == "HAVING":
+		if page == 0:
+			# GUI
+			APP_element = []
+			id_label = Label(text="Type the company ID to do having", font=("Arial", 10))
+			id_entry = Entry(root, width=30)
+			APP_element.append(id_entry)
+
+			id_label.grid(row=0, column=0)
+			id_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			print(c.execute("SELECT RELEASE_ID, COUNT(APP_ID) FROM APP GROUP BY RELEASE_ID HAVING RELEASE_ID = ?",
+					 [APP_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+
 def platform(op):
 	pass
 
@@ -894,7 +1132,7 @@ def Release(root, op, page):
 		if page == 0:
 			# GUI
 			release_element = []
-			company_label = Label(text="Please type company name to see if it has released APP", font=("Arial", 10))
+			company_label = Label(text="Type the company Name to get all released APP ID", font=("Arial", 10))
 			company_entry = Entry(root, width=30)
 			release_element.append(company_entry)
 			company_label.grid(row=0, column=0)
@@ -906,6 +1144,28 @@ def Release(root, op, page):
 			# execute sql script
 			c.execute('''PRAGMA foreign_keys = ON''')
 			print(c.execute("SELECT APP_ID from APP WHERE EXISTS (SELECT * FROM COMPANY WHERE COMPANY.COMPANY_ID = APP.RELEASE_ID AND COMPANY_NAME = ?)",
+					 [release_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			release_element[0].delete(0, END)
+
+	if op == "NOT_EXISTS":
+		if page == 0:
+			# GUI
+			release_element = []
+			company_label = Label(text="Get all released APP ID except for the typed company", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			release_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute('''PRAGMA foreign_keys = ON''')
+			print(c.execute("SELECT APP_ID from APP WHERE NOT EXISTS (SELECT * FROM COMPANY WHERE COMPANY.COMPANY_ID = APP.RELEASE_ID AND COMPANY_NAME = ?)",
 					 [release_element[0].get()]).fetchall())
 			# print(c.execute("SELECT * FROM APP").fetchall())
 			conn.commit()
