@@ -21,11 +21,13 @@ def op_interface(root, op, q_elements):
 	elif op == "UPDATE":
 		UPDATE(root, 0)
 	elif op == "IN":
-		IN()
+		IN(root, 0)
 	elif op == "NOT IN":
-		NOT_IN()
+		NOT_IN(root, 0)
 	elif op == "EXISTS":
-		EXISTS()
+		EXISTS(root, 0)
+	elif op == "NOT EXISTS":
+		NOT_EXISTS()
 	elif op == "COUNT":
 		COUNT()
 	elif op == "SUM":
@@ -232,13 +234,121 @@ def UPDATE(root, page, ele = None, table = None):
 		ok_button = Button(root, text="ok", command= f)
 		ok_button.grid(row=10, column=0)
 
-def IN():
-	pass
+def IN(root, page, ele = None, table = None):
+	# choose the table to delete
+	if page == 0:
+		title = Label(text="Please choose a relationship to do 'in':", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "work for", 
+					   "release", "trade", "report bug")
+		value.set("work for") # default value
+		ok_button = Button(root, text="next", command=lambda: IN(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
 
-def NOT_IN():
-	pass
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
 
-def EXISTS():
+	# delete conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# delete elements in new page
+		if table == "work for":
+			Work_for()
+			f = lambda: Work_for()
+		elif table == "release":
+			Release(root, "IN", 0)
+			f = lambda: Release(root, "IN", 1)
+		elif table == "trade":
+			Trade()
+			f = lambda: Trade()
+		else: # table == "report bug":
+			Report_bug()
+			f = lambda: Report_bug()
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
+def NOT_IN(root, page, ele = None, table = None):
+	# choose the table to delete
+	if page == 0:
+		title = Label(text="Please choose a relationship to do 'not in':", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "work for", 
+					   "release", "trade", "report bug")
+		value.set("work for") # default value
+		ok_button = Button(root, text="next", command=lambda: NOT_IN(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# delete conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# delete elements in new page
+		if table == "work for":
+			Work_for()
+			f = lambda: Work_for()
+		elif table == "release":
+			Release(root, "NOT_IN", 0)
+			f = lambda: Release(root, "NOT_IN", 1)
+		elif table == "trade":
+			Trade()
+			f = lambda: Trade()
+		else: # table == "report bug":
+			Report_bug()
+			f = lambda: Report_bug()
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
+def EXISTS(root, page, ele = None, table = None):
+	# choose the table to delete
+	if page == 0:
+		title = Label(text="Please choose a relationship to do 'exists':", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "work for", 
+					   "release", "trade", "report bug")
+		value.set("work for") # default value
+		ok_button = Button(root, text="next", command=lambda: EXISTS(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# delete conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# delete elements in new page
+		if table == "work for":
+			Work_for()
+			f = lambda: Work_for()
+		elif table == "release":
+			Release(root, "EXISTS", 0)
+			f = lambda: Release(root, "EXISTS", 1)
+		elif table == "trade":
+			Trade()
+			f = lambda: Trade()
+		else: # table == "report bug":
+			Report_bug()
+			f = lambda: Report_bug()
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
+def NOT_EXISTS():
 	pass
 
 def COUNT():
@@ -727,4 +837,83 @@ def trade(op):
 	pass
 
 def report_bug(op):
+	pass
+
+# relationship operation
+def Work_for():
+	pass
+
+release_element = []
+def Release(root, op, page):
+	global release_element
+	if op == "IN":
+		if page == 0:
+			# GUI
+			release_element = []
+			company_label = Label(text="Type the company Name to get all released APP ID", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			release_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute('''PRAGMA foreign_keys = ON''')
+			print(c.execute("SELECT APP_ID from APP WHERE RELEASE_ID IN (SELECT COMPANY_ID FROM COMPANY WHERE COMPANY_NAME = ?)",
+					 [release_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			release_element[0].delete(0, END)
+
+	if op == "NOT_IN":
+		if page == 0:
+			# GUI
+			release_element = []
+			company_label = Label(text="Get all released APP ID except for the typed company", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			release_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute('''PRAGMA foreign_keys = ON''')
+			print(c.execute("SELECT APP_ID from APP WHERE RELEASE_ID NOT IN (SELECT COMPANY_ID FROM COMPANY WHERE COMPANY_NAME = ?)",
+					 [release_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			release_element[0].delete(0, END)
+
+	if op == "EXISTS":
+		if page == 0:
+			# GUI
+			release_element = []
+			company_label = Label(text="Please type company name to see if it has released APP", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			release_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute('''PRAGMA foreign_keys = ON''')
+			print(c.execute("SELECT APP_ID from APP WHERE EXISTS (SELECT * FROM COMPANY WHERE COMPANY.COMPANY_ID = APP.RELEASE_ID AND COMPANY_NAME = ?)",
+					 [release_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			release_element[0].delete(0, END)
+
+def Trade():
+	pass
+
+def Report_bug():
 	pass
