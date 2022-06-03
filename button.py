@@ -31,11 +31,11 @@ def op_interface(root, op, q_elements):
 	elif op == "SUM":
 		SUM(root, 0)
 	elif op == "MAX":
-		MAX()
+		MAX(root, 0)
 	elif op == "MIN":
-		MIN()
+		MIN(root, 0)
 	elif op == "AVG":
-		AVG()
+		AVG(root, 0)
 	else: # op == "HAVING"
 		HAVING()
 
@@ -292,14 +292,149 @@ def SUM(root, page, ele = None, table = None):
 		ok_button = Button(root, text="ok", command= f)
 		ok_button.grid(row=10, column=0)
 
-def MAX():
-	pass
+def MAX(root, page, ele = None, table = None):
+	# choose the table to do sum
+	if page == 0:
+		title = Label(text="Please choose a table to do max:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: MAX(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
 
-def MIN():
-	pass
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
 
-def AVG():
-	pass
+	# do sum conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# do sum in new page
+		if table == "COMPANY":
+			company(root, "MAX", 0)
+			f = lambda: company(root, "MAX", 1)
+		elif table == "DEVELOPER":
+			developer("MAX", 0)
+			f = lambda: developer("MAX", 1)
+		elif table == "APP":
+			APP(root, "MAX", 0)
+			f = lambda: APP(root, "MAX", 1)
+		elif table == "PLATFORM":
+			platform("MAX", 0)
+			f = lambda: platform("MAX", 1)
+		elif table == "CLIENT":
+			client("MAX", 0)
+			f = lambda: client("MAX", 1)
+		elif table == "TRADE":
+			trade("MAX", 0)
+			f = lambda: trade("MAX", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("MAX", 0)
+			f = lambda: report_bug("MAX", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
+def MIN(root, page, ele = None, table = None):
+	# choose the table to do sum
+	if page == 0:
+		title = Label(text="Please choose a table to do min:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: MIN(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# do sum conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# do sum in new page
+		if table == "COMPANY":
+			company(root, "MIN", 0)
+			f = lambda: company(root, "MIN", 1)
+		elif table == "DEVELOPER":
+			developer("MIN", 0)
+			f = lambda: developer("MIN", 1)
+		elif table == "APP":
+			APP(root, "MIN", 0)
+			f = lambda: APP(root, "MIN", 1)
+		elif table == "PLATFORM":
+			platform("MIN", 0)
+			f = lambda: platform("MIN", 1)
+		elif table == "CLIENT":
+			client("MIN", 0)
+			f = lambda: client("MIN", 1)
+		elif table == "TRADE":
+			trade("MIN", 0)
+			f = lambda: trade("MIN", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("MIN", 0)
+			f = lambda: report_bug("MIN", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
+def AVG(root, page, ele = None, table = None):
+	# choose the table to do sum
+	if page == 0:
+		title = Label(text="Please choose a table to do average:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: AVG(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# do sum conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# do sum in new page
+		if table == "COMPANY":
+			company(root, "AVG", 0)
+			f = lambda: company(root, "AVG", 1)
+		elif table == "DEVELOPER":
+			developer("AVG", 0)
+			f = lambda: developer("AVG", 1)
+		elif table == "APP":
+			APP(root, "AVG", 0)
+			f = lambda: APP(root, "AVG", 1)
+		elif table == "PLATFORM":
+			platform("AVG", 0)
+			f = lambda: platform("AVG", 1)
+		elif table == "CLIENT":
+			client("AVG", 0)
+			f = lambda: client("AVG", 1)
+		elif table == "TRADE":
+			trade("AVG", 0)
+			f = lambda: trade("AVG", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("AVG", 0)
+			f = lambda: report_bug("AVG", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
 
 def HAVING():
 	pass
@@ -513,6 +648,69 @@ def APP(root, op, page):
 			c = conn.cursor()
 			# execute sql script
 			print(c.execute("SELECT RELEASE_ID, SUM(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = ?",
+					 [APP_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+
+	if op == "MAX":
+		if page == 0:
+			# GUI
+			APP_element = []
+			company_label = Label(text="Type the company ID to get max of APP install number", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			APP_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			print(c.execute("SELECT RELEASE_ID, MAX(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = ?",
+					 [APP_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+
+	if op == "MIN":
+		if page == 0:
+			# GUI
+			APP_element = []
+			company_label = Label(text="Type the company ID to get min of APP install number", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			APP_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			print(c.execute("SELECT RELEASE_ID, MIN(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = ?",
+					 [APP_element[0].get()]).fetchall())
+			# print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+
+	if op == "AVG":
+		if page == 0:
+			# GUI
+			APP_element = []
+			company_label = Label(text="Type the company ID to get average of APP install number", font=("Arial", 10))
+			company_entry = Entry(root, width=30)
+			APP_element.append(company_entry)
+			company_label.grid(row=0, column=0)
+			company_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			print(c.execute("SELECT RELEASE_ID, AVG(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = ?",
 					 [APP_element[0].get()]).fetchall())
 			# print(c.execute("SELECT * FROM APP").fetchall())
 			conn.commit()
