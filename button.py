@@ -15,7 +15,7 @@ def op_interface(root, op, q_elements):
 	if op == "SELECT-FROM-WHERE":
 		SELECT_FROM_WHERE()
 	elif op == "DELETE":
-		DELETE()
+		DELETE(root, 0)
 	elif op == "INSERT":
 		INSERT(root, 0)
 	elif op == "UPDATE":
@@ -84,8 +84,54 @@ def button_page(root):
 def SELECT_FROM_WHERE():
 	pass
 
-def DELETE():
-	pass
+def DELETE(root, page, ele = None, table = None):
+	# choose the table to insert
+	if page == 0:
+		title = Label(text="Please choose a table to delete:", font=("Arial", 10))
+		value = StringVar(root)
+		menu = OptionMenu(root, value, "COMPANY", 
+					   "DEVELOPER", "APP", "PLATFORM", 
+					   "CLIENT", "TRADE", "REPORT_BUG")
+		value.set("COMPANY") # default value
+		ok_button = Button(root, text="next", command=lambda: DELETE(root, 1, elements, value.get()))
+		elements = [title, menu, ok_button]
+
+		title.grid(row=0, column=0)
+		menu.grid(row=1, column=0)
+		ok_button.grid(row=2, column=0)
+
+	# insert conditions
+	elif page == 1:
+		# delete elements from last page
+		for e in ele:
+			e.destroy()
+		f = None
+		# insert elements in new page
+		if table == "COMPANY":
+			company(root, "DELETE", 0)
+			f = lambda: company(root, "DELETE", 1)
+		elif table == "DEVELOPER":
+			developer("DELETE", 0)
+			f = lambda: developer("DELETE", 1)
+		elif table == "APP":
+			APP(root, "DELETE", 0)
+			f = lambda: APP(root, "DELETE", 1)
+		elif table == "PLATFORM":
+			platform("DELETE", 0)
+			f = lambda: platform("DELETE", 1)
+		elif table == "CLIENT":
+			client("DELETE", 0)
+			f = lambda: client("DELETE", 1)
+		elif table == "TRADE":
+			trade("DELETE", 0)
+			f = lambda: trade("DELETE", 1)
+		else: # table == "REPORT_BUG"
+			report_bug("DELETE", 0)
+			f = lambda: report_bug("DELETE", 1)
+
+		ok_button = Button(root, text="ok", command= f)
+		ok_button.grid(row=10, column=0)
+
 	
 
 def INSERT(root, page, ele = None, table = None):
@@ -118,8 +164,8 @@ def INSERT(root, page, ele = None, table = None):
 			developer("INSERT", 0)
 			f = lambda: developer("INSERT", 1)
 		elif table == "APP":
-			APP("INSERT", 0)
-			f = lambda: APP("INSERT", 1)
+			APP(root, "INSERT", 0)
+			f = lambda: APP(root, "INSERT", 1)
 		elif table == "PLATFORM":
 			platform("INSERT", 0)
 			f = lambda: platform("INSERT", 1)
@@ -175,6 +221,7 @@ def company(root, op, page):
 	if op == "INSERT":
 		if page == 0:
 			# GUI
+			company_element = []
 			id_label = Label(text="Company ID", font=("Arial", 10))
 			name_label = Label(text="Company Name", font=("Arial", 10))
 			inter_label = Label(text="is international?", font=("Arial", 10))
@@ -198,7 +245,7 @@ def company(root, op, page):
 			conn = sqlite3.connect('database.db')
 			c = conn.cursor()
 			# execute sql script
-			c.execute("INSERT INTO company (COMPANY_ID, COMPANY_NAME, IS_INTERNATIONAL) VALUES(?, ?, ?)",
+			c.execute("INSERT INTO COMPANY (COMPANY_ID, COMPANY_NAME, IS_INTERNATIONAL) VALUES(?, ?, ?)",
 					 [company_element[0].get(), company_element[1].get(), company_element[2].get()])
 			print(c.execute("SELECT * FROM COMPANY").fetchall())
 			conn.commit()
@@ -206,11 +253,96 @@ def company(root, op, page):
 			company_element[0].delete(0, END)
 			company_element[1].delete(0, END)
 
+	if op == "DELETE":
+		if page == 0:
+			# GUI
+			company_element = []
+			name_label = Label(text="Type the Company Name to delete", font=("Arial", 10))
+			name_entry = Entry(root, width=30)
+			company_element.append(name_entry)
+
+			name_label.grid(row=0, column=0)
+			name_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute("DELETE FROM COMPANY WHERE COMPANY_NAME = ?",
+					 [company_element[0].get()])
+			print(c.execute("SELECT * FROM COMPANY").fetchall())
+			conn.commit()
+			conn.close()
+			company_element[0].delete(0, END)
+
 def developer(op):
 	pass
 
-def APP(op):
-	pass
+APP_element = []
+def APP(root, op, page):
+	global APP_element
+	if op == "INSERT":
+		if page == 0:
+			# GUI
+			APP_element = []
+			id_label = Label(text="APP ID", font=("Arial", 10))
+			cost_label = Label(text="APP Cost", font=("Arial", 10))
+			install_label = Label(text="APP install number", font=("Arial", 10))
+			company_label = Label(text="APP company ID", font=("Arial", 10))
+			id_entry = Entry(root, width=30)
+			cost_entry = Entry(root, width=30)
+			install_entry = Entry(root, width=30)
+			company_entry = Entry(root, width=30)
+			APP_element.append(id_entry)
+			APP_element.append(cost_entry)
+			APP_element.append(install_entry)
+			APP_element.append(company_entry)
+
+			id_label.grid(row=0, column=0)
+			id_entry.grid(row=1, column=0)
+			cost_label.grid(row=2, column=0)
+			cost_entry.grid(row=3, column=0)
+			install_label.grid(row=4, column=0)
+			install_entry.grid(row=5, column=0)
+			company_label.grid(row=6, column=0)
+			company_entry.grid(row=7, column=0)
+
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute("INSERT INTO APP (APP_ID, INSTALL_NUM, COST, RELEASE_ID) VALUES(?, ?, ?, ?)",
+					 [APP_element[0].get(), int(APP_element[1].get()), int(APP_element[2].get()), APP_element[3].get()])
+			print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
+			APP_element[1].delete(0, END)
+			APP_element[2].delete(0, END)
+			APP_element[3].delete(0, END)
+
+	if op == "DELETE":
+		if page == 0:
+			# GUI
+			APP_element = []
+			id_label = Label(text="Type the APP ID to delete", font=("Arial", 10))
+			id_entry = Entry(root, width=30)
+			APP_element.append(id_entry)
+
+			id_label.grid(row=0, column=0)
+			id_entry.grid(row=1, column=0)
+		if page == 1:
+			# database
+			conn = sqlite3.connect('database.db')
+			c = conn.cursor()
+			# execute sql script
+			c.execute("DELETE FROM APP WHERE APP_ID = ?",
+					 [APP_element[0].get()])
+			print(c.execute("SELECT * FROM APP").fetchall())
+			conn.commit()
+			conn.close()
+			APP_element[0].delete(0, END)
 
 def platform(op):
 	pass
