@@ -1,0 +1,189 @@
+demo sql instructions
+
+1. select from where
+SELECT COST FROM APP WHERE APP_ID = 'itune'
+SELECT * FROM APP
+
+2. delete
+DELETE FROM APP WHERE APP_ID = 'mymovie'
+
+
+
+3. insert
+INSERT INTO APP (APP_ID, INSTALL_NUM, COST, RELEASE_ID) VALUES('mymovie', 200, 300, '003')
+
+
+4. update
+UPDATE APP SET COST = 200, RELEASE_ID = '002' WHERE APP_ID = 'itune'
+//original cost = 100 release id = 001
+
+5. in
+SELECT APP_ID from APP WHERE RELEASE_ID IN (SELECT COMPANY_ID FROM COMPANY WHERE COMPANY_NAME = 'apple')
+
+
+6. not in
+SELECT APP_ID from APP WHERE RELEASE_ID NOT IN (SELECT COMPANY_ID FROM COMPANY WHERE COMPANY_NAME = 'apple')
+
+
+7. exists
+SELECT APP_ID from APP WHERE EXISTS (SELECT * FROM COMPANY WHERE COMPANY.COMPANY_ID = APP.RELEASE_ID AND COMPANY_NAME = 'apple')
+
+
+8. not exists
+SELECT APP_ID from APP WHERE NOT EXISTS (SELECT * FROM COMPANY WHERE COMPANY.COMPANY_ID = APP.RELEASE_ID AND COMPANY_NAME = 'apple')
+
+
+9. count
+SELECT COUNT(APP_ID) FROM APP WHERE RELEASE_ID = '001'
+
+
+10. sum
+SELECT RELEASE_ID, SUM(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = '001'
+
+
+11. max
+SELECT RELEASE_ID, MAX(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = '001'
+
+
+12. min
+SELECT RELEASE_ID, MIN(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = '001'
+
+
+13. avg
+SELECT RELEASE_ID, AVG(INSTALL_NUM) AS SUM_TABLE FROM APP WHERE RELEASE_ID = '001'
+
+
+14. having
+SELECT RELEASE_ID, COUNT(APP_ID) FROM APP GROUP BY RELEASE_ID HAVING RELEASE_ID = '001'
+
+
+
+
+tables
+
+
+company
+id   name      is international
+001  apple     yes
+002  google    yes
+003  taigtian  no
+004  asus      yes
+005  chushi    no
+006  turing    yes
+007  hunghai   no
+008  microsoft yes
+009  fuban     no
+010  kuanda    no
+
+
+developer
+id     position     salary    work for
+John   SWE          5000      001
+Mary   SWE          4000      002
+Ling   DS           7000      007
+Meg    PM           2000      004
+Mike   RD           2500      004
+Terry  DS           5000      002
+Amber  RD           4000      001
+Jenny  PM           3000      002  
+Sue    DS           6000      001
+Sunny  PM           4000      007
+
+
+
+APP
+id           install num  cost   release_id
+itune        3000         100    001
+imovie       200          200    001
+google map   10000        50     002
+pages        8000         70     001
+google meet  2500         100    002
+wifiAnalyer  5000         300    007
+desksms      4500         130    003
+applock      6000         100    002
+swiftkey     7000         80     009
+tasker       6000         120    010
+
+
+
+platform
+website_ip      popularity   trade num
+000.000.000.1   2300         100
+000.000.000.2   12000        340
+000.000.000.3   3400         122
+000.000.000.4   3723         149
+000.000.000.5   5400         203
+000.000.000.6   3500         453
+000.000.000.7   3000         443
+000.000.000.8   4000         434
+000.000.000.9   3000         636
+000.000.001.0   3000         583
+
+client
+id         job                age
+Hanry      salesman           23
+Ann        teacher            30
+Tsaoni      grass mud horse    1
+Gigi       secretary          40
+Fan        programmer         25
+Ken        engineer           35
+Rex        student            14
+Windy      student            17
+Peter      nurse              18
+Ling       programmer         24
+
+
+trade
+trade id     platform id        app id           client id
+3234         000.000.000.1      google map       Hanry
+3235         000.000.000.3      google meet      Ann
+3236         000.000.000.4      google meet      Gigi
+4177         000.000.000.4      pages            Fan
+4178         000.000.000.9      itune            Tsaoni
+4179         000.000.001.0      desksms          Tsaoni
+4180         000.000.000.7      desksms          Gigi
+4181         000.000.000.3      applock          Rex
+4182         000.000.000.3      applock          Peter
+4183         000.000.000.2      google meet      Peter
+
+
+report bug
+bug id     developer id    app id         client id
+401        John            pages          Fan
+402        Mary            google map     Hanry
+403        Mary            google map     Hanry
+404        Ling            google meet    Gigi
+405        Ling            itune          Tsaoni
+406        Terry           google meet    Peter
+407        Amber           google meet    Tsaoni
+418        Terry           tune           Fan
+419        Terry           pages          Windy
+410        Ling            applock        Tsaoni
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

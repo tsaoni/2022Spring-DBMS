@@ -16,8 +16,8 @@ def execute_sql(qentry):
 	c = conn.cursor()
 	# execute sql script
 	c.execute('''PRAGMA foreign_keys = ON''')
-	c.execute(script)
-	print(c.execute("SELECT * FROM COMPANY").fetchall())
+	print(c.execute(script).fetchall())
+	# print(c.execute("SELECT * FROM REPORT_BUG").fetchall())
 	conn.commit()
 	conn.close()
 
